@@ -24,7 +24,6 @@
         .success-msg { background: #d4edda; color: #155724; padding: 12px; border-radius: 8px; margin-top: 15px; display: none; }
         .error-msg { background: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; margin-top: 15px; display: none; }
         .upi-display { background: #f8f9fa; padding: 10px; border-radius: 8px; font-size: 14px; margin-bottom: 15px; text-align: center; color: #333; }
-        .withdraw-section { margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -57,12 +56,7 @@
             </div>
         </div>
 
-        <!-- WITHDRAW SECTION - KOTTHADI -->
-        <div class="withdraw-section" id="withdrawSection">
-            <input type="number" id="withdrawAmount" placeholder="Enter amount to withdraw" min="10">
-            <button class="btn" id="withdrawBtn" onclick="requestWithdraw()">Withdraw Money</button>
-        </div>
-        
+        <button class="btn" id="withdrawBtn" onclick="requestWithdraw()">Withdraw Money</button>
         <button class="btn btn-logout" onclick="logout()">Logout</button>
         
         <div class="success-msg" id="successMsg">✅ Withdraw request sent! Admin will send money soon.</div>
@@ -73,13 +67,13 @@
         const SUPABASE_URL = 'https://xnbunwwcbrvydyxuixmc.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_WoTzyIfDVAMTBNJOtP6r4Q_GbOeAgin';
         const TELEGRAM_BOT_TOKEN = '8645227789:AAEbpT3bW_qSUllPG4vgZ5NnoRnYXUPjYR8';
-        const TELEGRAM_CHAT_ID = '1761198919';
+        const TELEGRAM_CHAT_ID = '1761198919'; // Nee Chat ID - withdrawal request ikkada vastadi
         const { createClient } = supabase;
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let currentUser = null;
 
-        // 1. LOGIN FUNCTION
+        // 1. LOGIN FUNCTION - UPI ID tho
         async function login() {
             const upiId = document.getElementById('loginUpiId').value.trim();
             const errorDiv = document.getElementById('loginError');
@@ -90,6 +84,7 @@
             }
 
             try {
+                // Check if user exists in DB
                 const { data, error } = await supabaseClient
                     .from('zyne_users')
                     .select('*')
@@ -99,14 +94,13 @@
                 if (error && error.code !== 'PGRST116') throw error;
 
                 if (data) {
+                    // Existing user
                     currentUser = data;
                 } else {
-                    // TEST USER KI ₹150 AUTO ADD
-                    let startBalance = upiId === 'test@paytm' ? 150 : 0;
-                    
+                    // New user - create with 0 balance
                     const { data: newUser, error: insertErr } = await supabaseClient
                         .from('zyne_users')
-                        .insert({ upi_id: upiId, balance: startBalance, total_tasks: 0 })
+                        .insert({ upi_id: upiId, balance: 0, total_tasks: 0 })
                         .select()
                         .single();
                     if (insertErr) throw insertErr;
@@ -125,13 +119,7 @@
             document.getElementById('displayUpi').innerText = currentUser.upi_id;
             document.getElementById('balance').innerText = currentUser.balance;
             document.getElementById('tasksCount').innerText = currentUser.total_tasks;
-            
-            // Balance unte ne withdraw section chupinchu
-            if(currentUser.balance >= 10) {
-                document.getElementById('withdrawSection').style.display = 'block';
-            } else {
-                document.getElementById('withdrawSection').style.display = 'none';
-            }
+            document.getElementById('withdrawBtn').disabled = currentUser.balance < 10;
         }
 
         function logout() {
@@ -139,72 +127,46 @@
             document.getElementById('loginScreen').classList.remove('hidden');
             document.getElementById('dashboardScreen').classList.add('hidden');
             document.getElementById('loginUpiId').value = '';
-            document.getElementById('withdrawAmount').value = '';
         }
 
-        // 2. WITHDRAW FUNCTION - AMOUNT ENTER CHESEDI
+        // 2. WITHDRAW FUNCTION - Niku Telegram lo message vastadi
         async function requestWithdraw() {
             const btn = document.getElementById('withdrawBtn');
             const errorDiv = document.getElementById('errorMsg');
-            const successDiv = document.getElementById('successMsg');
-            const amountInput = document.getElementById('withdrawAmount');
-            const amount = parseInt(amountInput.value);
-            
             errorDiv.style.display = 'none';
-            successDiv.style.display = 'none';
 
-            if (!amount || amount < 10) {
-                return showError('Minimum ₹10 withdraw cheyali bro');
-            }
-            
-            if (amount > currentUser.balance) {
-                return showError('Balance saripodu bro. Max: ₹' + currentUser.balance);
-            }
+            if (currentUser.balance < 10) return showError('Minimum ₹10 undali');
 
-            btn.disabled = true; 
-            btn.innerText = 'Processing...';
-            
+            btn.disabled = true; btn.innerText = 'Processing...';
             try {
-                // 1. Telegram ki message pampu
-                const msg = `🔔 NEW WITHDRAW REQUEST%0A%0AUPI ID: ${currentUser.upi_id}%0AAmount: ₹${amount}%0ARemaining Balance: ₹${currentUser.balance - amount}%0ATasks Done: ${currentUser.total_tasks}%0ATime: ${new Date().toLocaleString()}`;
-                
-                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${msg}`);
+                // 1. Telegram ki message pampu - Niku notification vastadi
+                const msg = `🔔 NEW WITHDRAW REQUEST\n\nUPI ID: ${currentUser.upi_id}\nAmount: ₹${currentUser.balance}\nTasks Done: ${currentUser.total_tasks}\n\nPampu ra babu 💸`;
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(msg)}`);
 
-                // 2. DB lo balance update chey
-                const newBalance = currentUser.balance - amount;
+                // 2. DB lo balance 0 chey - space save cheyadaniki old records delete cheyachu
                 const { error } = await supabaseClient
                     .from('zyne_users')
-                    .update({ balance: newBalance, last_updated: new Date() })
+                    .update({ balance: 0, last_updated: new Date() })
                     .eq('upi_id', currentUser.upi_id);
                 if (error) throw error;
 
-                currentUser.balance = newBalance;
-                document.getElementById('balance').innerText = newBalance;
-                amountInput.value = '';
-                successDiv.style.display = 'block';
-                
-                // Balance 10 kanna takkuva aithe withdraw hide chey
-                if(newBalance < 10) {
-                    document.getElementById('withdrawSection').style.display = 'none';
-                }
-                
+                currentUser.balance = 0;
+                document.getElementById('balance').innerText = '0';
+                document.getElementById('successMsg').style.display = 'block';
+                btn.innerText = 'Request Sent';
             } catch (err) {
                 showError('Error: ' + err.message);
-            } finally {
-                btn.disabled = false; 
-                btn.innerText = 'Withdraw Money';
+                btn.disabled = false; btn.innerText = 'Withdraw Money';
             }
         }
 
         function showError(msg) {
             const errorDiv = document.getElementById('errorMsg');
-            errorDiv.innerText = msg; 
-            errorDiv.style.display = 'block';
+            errorDiv.innerText = msg; errorDiv.style.display = 'block';
         }
         function showLoginError(msg) {
             const errorDiv = document.getElementById('loginError');
-            errorDiv.innerText = msg; 
-            errorDiv.style.display = 'block';
+            errorDiv.innerText = msg; errorDiv.style.display = 'block';
         }
     </script>
 </body>
