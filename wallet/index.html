@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zyne Wallet</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .container { background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); width: 100%; max-width: 400px; overflow: hidden; }
+        .header { background: #2a5298; color: white; padding: 25px; text-align: center; }
+        .header h1 { font-size: 24px; margin-bottom: 5px; }
+        .header p { opacity: 0.9; font-size: 14px; }
+        .content { padding: 30px; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; color: #333; font-weight: 600; font-size: 14px; }
+        .input-group input { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: 0.3s; }
+        .input-group input:focus { border-color: #2a5298; outline: none; }
+        .btn { width: 100%; padding: 14px; background: #2a5298; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn:hover { background: #1e3c72; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-secondary { background: #f5f5f5; color: #333; margin-top: 10px; }
+        .btn-secondary:hover { background: #e0e0e0; }
+        .wallet-box { background: #f8f9ff; border-radius: 15px; padding: 20px; margin-bottom: 20px; text-align: center; }
+        .wallet-box h3 { color: #666; font-size: 14px; margin-bottom: 10px; }
+        .balance { font-size: 36px; font-weight: 700; color: #2a5298; margin-bottom: 5px; }
+        .username { color: #666; font-size: 14px; }
+        .hidden { display: none; }
+        .msg { padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; text-align: center; }
+        .msg-error { background: #ffebee; color: #c62828; }
+        .msg-success { background: #e8f5e9; color: #2e7d32; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #2a5298; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💙 Zyne Wallet</h1>
+            <p>Secure • Fast • Simple</p>
+        </div>
+        
+        <div class="content">
+            <!-- Login Screen -->
+            <div id="loginScreen">
+                <div id="loginMsg"></div>
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="Enter username">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter password">
+                </div>
+                <button class="btn" id="loginBtn" onclick="login()">Login</button>
+                <button class="btn btn-secondary" onclick="showRegister()">Create Account</button>
+            </div>
+
+            <!-- Register Screen -->
+            <div id="registerScreen" class="hidden">
+                <div id="regMsg"></div>
+                <div class="input-group">
+                    <label>Choose Username</label>
+                    <input type="text" id="regUsername" placeholder="Enter username">
+                </div>
+                <div class="input-group">
+                    <label>Choose Password</label>
+                    <input type="password" id="regPassword" placeholder="Enter password">
+                </div>
+                <button class="btn" id="regBtn" onclick="register()">Register</button>
+                <button class="btn btn-secondary" onclick="showLogin()">Back to Login</button>
+            </div>
+
+            <!-- Wallet Screen -->
+            <div id="walletScreen" class="hidden">
+                <div class="wallet-box">
+                    <h3>Current Balance</h3>
+                    <div class="balance">₹<span id="balance">0</span></div>
+                    <div class="username">@<span id="userDisplay"></span></div>
+                </div>
+                
+                <div id="withdrawMsg"></div>
+                <div class="input-group">
+                    <label>Withdraw Amount</label>
+                    <input type="number" id="amount" placeholder="Enter amount in ₹" min="1">
+                </div>
+                <div class="input-group">
+                    <label>UPI ID</label>
+                    <input type="text" id="upi" placeholder="yourname@upi">
+                </div>
+                <button class="btn" id="withdrawBtn" onclick="withdraw()">Request Withdrawal</button>
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+const SUPABASE_URL = 'https://xnbunwwcbrvydyxuixmc.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_WoTzyIfDVAMTBNJOtP6r4Q_GbOeAgin';
+const BOT_TOKEN = '8645227789:AAEbpT3bW_qSUllPG4vgZ5NnoRnYXUPjYR8';
+const CHAT_ID = '1761198919';
+
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+
+function showMsg(id, text, type) {
+    const el = document.getElementById(id);
+    el.innerHTML = `<div class="msg msg-${type}">${text}</div>`;
+    setTimeout(() => el.innerHTML = '', 4000);
+}
+
+function showLogin() {
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('registerScreen').classList.add('hidden');
+    document.getElementById('walletScreen').classList.add('hidden');
+}
+
+function showRegister() {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('registerScreen').classList.remove('hidden');
+}
+
+function showWallet() {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('registerScreen').classList.add('hidden');
+    document.getElementById('walletScreen').classList.remove('hidden');
+}
+
+async function login() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const btn = document.getElementById('loginBtn');
+    
+    if (!username || !password) {
+        showMsg('loginMsg', 'Enter username and password', 'error');
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<div class="loader"></div>';
+    
+    const { data, error } = await db.from('users').select('*').eq('username', username).eq('password', password).single();
+    
+    btn.disabled = false;
+    btn.innerHTML = 'Login';
+    
+    if (error || !data) {
+        showMsg('loginMsg', 'Invalid username or password', 'error');
+        return;
+    }
+    
+    currentUser = data;
+    document.getElementById('balance').textContent = data.balance;
+    document.getElementById('userDisplay').textContent = data.username;
+    showWallet();
+}
+
+async function register() {
+    const username = document.getElementById('regUsername').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const btn = document.getElementById('regBtn');
+    
+    if (!username || !password) {
+        showMsg('regMsg', 'Fill all fields', 'error');
+        return;
+    }
+    
+    if (password.length < 4) {
+        showMsg('regMsg', 'Password must be 4+ characters', 'error');
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<div class="loader"></div>';
+    
+    const { data: existing } = await db.from('users').select('username').eq('username', username).single();
+    
+    if (existing) {
+        btn.disabled = false;
+        btn.innerHTML = 'Register';
+        showMsg('regMsg', 'Username already taken', 'error');
+        return;
+    }
+    
+    const { data, error } = await db.from('users').insert([{ username, password, balance: 100 }]).select().single();
+    
+    btn.disabled = false;
+    btn.innerHTML = 'Register';
+    
+    if (error) {
+        showMsg('regMsg', 'Registration failed. Try again', 'error');
+        return;
+    }
+    
+    showMsg('regMsg', 'Account created! Login now', 'success');
+    setTimeout(showLogin, 1500);
+}
+
+async function withdraw() {
+    const amount = parseInt(document.getElementById('amount').value);
+    const upi = document.getElementById('upi').value.trim();
+    const btn = document.getElementById('withdrawBtn');
+    
+    if (!amount || amount < 1) {
+        showMsg('withdrawMsg', 'Enter valid amount', 'error');
+        return;
+    }
+    
+    if (!upi || !upi.includes('@')) {
+        showMsg('withdrawMsg', 'Enter valid UPI ID', 'error');
+        return;
+    }
+    
+    if (amount > currentUser.balance) {
+        showMsg('withdrawMsg', 'Insufficient balance', 'error');
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<div class="loader"></div>';
+    
+    const newBalance = currentUser.balance - amount;
+    
+    const { error: updateError } = await db.from('users').update({ balance: newBalance }).eq('id', currentUser.id);
+    
+    if (updateError) {
+        btn.disabled = false;
+        btn.innerHTML = 'Request Withdrawal';
+        showMsg('withdrawMsg', 'Withdrawal failed. Try again', 'error');
+        return;
+    }
+    
+    await db.from('withdrawals').insert([{
+        user_id: currentUser.id,
+        username: currentUser.username,
+        amount: amount,
+        upi_id: upi,
+        status: 'pending'
+    }]);
+    
+    const telegramMsg = `💸 *New Withdrawal Request*\n\n👤 User: ${currentUser.username}\n💰 Amount: ₹${amount}\n📱 UPI: ${upi}\n⏰ Time: ${new Date().toLocaleString('en-IN')}`;
+    
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: telegramMsg, parse_mode: 'Markdown' })
+    });
+    
+    currentUser.balance = newBalance;
+    document.getElementById('balance').textContent = newBalance;
+    document.getElementById('amount').value = '';
+    document.getElementById('upi').value = '';
+    
+    btn.disabled = false;
+    btn.innerHTML = 'Request Withdrawal';
+    showMsg('withdrawMsg', 'Withdrawal request sent! Check Telegram', 'success');
+}
+
+function logout() {
+    currentUser = null;
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+    showLogin();
+}
+
+// Check if already logged in
+const saved = localStorage.getItem('zyne_user');
+if (saved) {
+    currentUser = JSON.parse(saved);
+    document.getElementById('balance').textContent = currentUser.balance;
+    document.getElementById('userDisplay').textContent = currentUser.username;
+    showWallet();
+}
+</script>
+</body>
+</html>
