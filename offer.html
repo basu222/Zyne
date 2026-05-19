@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Zyne Offer</title>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial,sans-serif;
+    }
+
+    body{
+      background:#050014;
+      color:white;
+      min-height:100vh;
+      overflow-x:hidden;
+
+      background-image:
+      radial-gradient(circle at top left,
+      rgba(98,0,255,0.35),
+      transparent 30%),
+
+      radial-gradient(circle at right,
+      rgba(0,140,255,0.18),
+      transparent 25%);
+    }
+
+    .container{
+      max-width:500px;
+      margin:auto;
+      padding:20px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:25px;
+    }
+
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:28px;
+      font-weight:bold;
+    }
+
+    .logo-box{
+      width:50px;
+      height:50px;
+      border-radius:16px;
+
+      background:
+      linear-gradient(135deg,#6a00ff,#2f7bff);
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      font-size:24px;
+      font-weight:bold;
+    }
+
+    .telegram-btn{
+      padding:14px 18px;
+      border-radius:16px;
+      border:none;
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
+
+      background:
+      linear-gradient(90deg,#00a2ff,#00c6ff);
+
+      box-shadow:
+      0 0 25px rgba(0,174,255,0.35);
+    }
+
+    .card{
+      background:rgba(255,255,255,0.04);
+
+      border:1px solid rgba(255,255,255,0.08);
+
+      border-radius:28px;
+
+      padding:22px;
+
+      backdrop-filter:blur(12px);
+
+      box-shadow:
+      0 0 30px rgba(98,0,255,0.16);
+    }
+
+    .badge{
+      display:inline-block;
+
+      padding:10px 18px;
+
+      border-radius:999px;
+
+      background:rgba(106,0,255,0.15);
+
+      border:1px solid rgba(106,0,255,0.3);
+
+      color:#9e8bff;
+
+      margin-bottom:18px;
+
+      font-size:14px;
+      font-weight:bold;
+    }
+
+    .offer-img{
+      width:100%;
+      border-radius:22px;
+      margin-bottom:22px;
+    }
+
+    h1{
+      font-size:34px;
+      margin-bottom:10px;
+      line-height:1.2;
+    }
+
+    .reward{
+      font-size:30px;
+      font-weight:bold;
+      color:#8f7cff;
+      margin-bottom:20px;
+    }
+
+    .desc{
+      color:#cfcfcf;
+      line-height:1.7;
+      margin-bottom:25px;
+    }
+
+    .input-box{
+      margin-bottom:18px;
+    }
+
+    .input-box label{
+      display:block;
+      margin-bottom:10px;
+      color:#d7d7d7;
+      font-size:15px;
+    }
+
+    .input-box input{
+      width:100%;
+      padding:16px;
+
+      border-radius:16px;
+
+      border:1px solid rgba(255,255,255,0.08);
+
+      background:rgba(255,255,255,0.04);
+
+      color:white;
+
+      outline:none;
+
+      font-size:16px;
+    }
+
+    .start-btn{
+      width:100%;
+      padding:18px;
+
+      border:none;
+
+      border-radius:18px;
+
+      font-size:18px;
+      font-weight:bold;
+
+      color:white;
+
+      cursor:pointer;
+
+      margin-top:10px;
+
+      background:
+      linear-gradient(90deg,#6a00ff,#2f7bff);
+
+      box-shadow:
+      0 0 25px rgba(98,0,255,0.4);
+    }
+
+    .section{
+      margin-top:25px;
+
+      background:rgba(255,255,255,0.03);
+
+      border:1px solid rgba(255,255,255,0.08);
+
+      border-radius:22px;
+
+      padding:20px;
+    }
+
+    .section h2{
+      margin-bottom:16px;
+      color:#9e8bff;
+      font-size:22px;
+    }
+
+    .section p{
+      color:#cccccc;
+      line-height:1.8;
+      white-space:pre-line;
+    }
+
+    .status-box{
+      margin-top:25px;
+
+      padding:18px;
+
+      border-radius:20px;
+
+      text-align:center;
+
+      background:
+      rgba(0,255,136,0.08);
+
+      border:
+      1px solid rgba(0,255,136,0.2);
+    }
+
+    .status-box h3{
+      color:#5cffb2;
+      margin-bottom:8px;
+    }
+
+    .status-box p{
+      color:#b8ffd8;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="topbar">
+
+      <div class="logo">
+        <div class="logo-box">Z</div>
+        Zyne
+      </div>
+
+      <button class="telegram-btn">
+        Join Telegram
+      </button>
+
+    </div>
+
+    <div class="card">
+
+      <div class="badge">
+        🔥 Trusted Partner Offer
+      </div>
+
+      <img
+        id="image"
+        class="offer-img"
+      >
+
+      <h1 id="title">
+        Loading...
+      </h1>
+
+      <div class="reward">
+        Earn ₹<span id="reward">0</span>
+      </div>
+
+      <p
+        id="description"
+        class="desc"
+      ></p>
+
+      <!-- FORM -->
+
+      <div class="input-box">
+
+        <label>
+          Full Name
+        </label>
+
+        <input
+          type="text"
+          id="name"
+          placeholder="Enter your full name"
+        >
+
+      </div>
+
+      <div class="input-box">
+
+        <label>
+          Mobile Number
+        </label>
+
+        <input
+          type="text"
+          id="mobile"
+          placeholder="Enter mobile number"
+        >
+
+      </div>
+
+      <div class="input-box">
+
+        <label>
+          UPI ID
+        </label>
+
+        <input
+          type="text"
+          id="upi"
+          placeholder="Enter your UPI ID"
+        >
+
+      </div>
+
+      <button
+        class="start-btn"
+        onclick="startOffer()"
+      >
+        Start Task
+      </button>
+
+      <!-- STEPS -->
+
+      <div class="section">
+
+        <h2>
+          📋 How To Complete
+        </h2>
+
+        <p id="steps"></p>
+
+      </div>
+
+      <!-- STATUS -->
+
+      <div class="status-box">
+
+        <h3>
+          ⚡ Fast Tracking
+        </h3>
+
+        <p>
+          Your reward will automatically
+          reflect once the task is completed.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const API =
+    'https://zyne-backend-3rbw.onrender.com';
+
+    let currentOffer = null;
+
+    const params =
+    new URLSearchParams(window.location.search);
+
+    const offerId =
+    params.get('id');
+
+    async function loadOffer(){
+
+      const res =
+      await fetch(`${API}/offers`);
+
+      const data =
+      await res.json();
+
+      const offer =
+      data.find(o => o.id == offerId);
+
+      currentOffer = offer;
+
+      document.getElementById('title')
+      .innerText = offer.title;
+
+      document.getElementById('reward')
+      .innerText = offer.reward;
+
+      document.getElementById('description')
+      .innerText = offer.description;
+
+      document.getElementById('steps')
+      .innerText = offer.steps;
+
+      document.getElementById('image')
+      .src = offer.image;
+    }
+
+    async function startOffer(){
+
+      const name =
+      document.getElementById('name').value;
+
+      const mobile =
+      document.getElementById('mobile').value;
+
+      const upi =
+      document.getElementById('upi').value;
+
+      if(!name || !mobile || !upi){
+
+        alert('Please fill all details');
+
+        return;
+      }
+
+      const res =
+      await fetch(
+        `${API}/click`,
+        {
+          method:'POST',
+
+          headers:{
+            'Content-Type':'application/json'
+          },
+
+          body:JSON.stringify({
+
+            upi_id:upi,
+
+            offer_id:currentOffer.id
+          })
+        }
+      );
+
+      const data =
+      await res.json();
+
+      const click_id =
+      data.click_id;
+
+      let finalLink =
+      currentOffer.tracking_link;
+
+      finalLink += click_id;
+
+      window.location.href =
+      finalLink;
+    }
+
+    loadOffer();
+
+  </script>
+
+</body>
+</html>
