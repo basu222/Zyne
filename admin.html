@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zyne Admin Panel</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #050014;
+      color: white;
+      min-height: 100vh;
+      padding: 20px;
+      background-image:
+        radial-gradient(circle at top left, rgba(98,0,255,0.3), transparent 30%),
+        radial-gradient(circle at right, rgba(0,140,255,0.2), transparent 25%);
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      margin-bottom: 25px;
+      backdrop-filter: blur(10px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .logo-box {
+      width: 50px;
+      height: 50px;
+      border-radius: 15px;
+      background: linear-gradient(135deg,#6a00ff,#2f7bff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .dashboard-title {
+      font-size: 34px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 25px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(98,0,255,0.2);
+    }
+
+    .card h2 {
+      font-size: 35px;
+      margin-bottom: 10px;
+      color: #8f7cff;
+    }
+
+    .card p {
+      color: #bbb;
+    }
+
+    .section {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 25px;
+      backdrop-filter: blur(10px);
+    }
+
+    .section h2 {
+      margin-bottom: 20px;
+      color: #9b8cff;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      color: white;
+      outline: none;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(90deg,#6a00ff,#2f7bff);
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.02);
+    }
+
+    .offer-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .offer-card img {
+      width: 100%;
+      border-radius: 14px;
+      margin-bottom: 10px;
+    }
+
+    .offer-card h3 {
+      margin-bottom: 8px;
+    }
+
+    .offer-card p {
+      color: #ccc;
+      margin-bottom: 10px;
+    }
+
+    .delete-btn {
+      background: linear-gradient(90deg,#ff004c,#ff4d4d);
+    }
+
+    .loading {
+      text-align: center;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <div class="logo">
+      <div class="logo-box">Z</div>
+      Zyne Admin
+    </div>
+  </div>
+
+  <h1 class="dashboard-title">⚡ Dashboard</h1>
+
+  <div class="stats">
+
+    <div class="card">
+      <h2 id="clicks">0</h2>
+      <p>Total Clicks</p>
+    </div>
+
+    <div class="card">
+      <h2 id="conversions">0</h2>
+      <p>Conversions</p>
+    </div>
+
+    <div class="card">
+      <h2 id="revenue">₹0</h2>
+      <p>Total Revenue</p>
+    </div>
+
+    <div class="card">
+      <h2 id="withdrawals">0</h2>
+      <p>Withdrawals</p>
+    </div>
+
+  </div>
+
+  <div class="section">
+
+    <h2>Add Offer</h2>
+
+    <input type="text" id="title" placeholder="Offer Title">
+
+    <input type="number" id="reward" placeholder="Reward Amount">
+
+    <input type="text" id="image" placeholder="Image URL">
+
+    <input type="text" id="tracking_link" placeholder="Tracking Link">
+
+    <button onclick="addOffer()">Add Offer</button>
+
+  </div>
+
+  <div class="section">
+
+    <h2>Offers</h2>
+
+    <div id="offers" class="loading">
+      Loading...
+    </div>
+
+  </div>
+
+  <script>
+
+    const API = 'https://zyne-backend-3rbw.onrender.com';
+
+    async function loadStats() {
+
+      const res = await fetch(`${API}/dashboard-stats`);
+      const data = await res.json();
+
+      document.getElementById('clicks').innerText = data.total_clicks;
+      document.getElementById('conversions').innerText = data.total_conversions;
+      document.getElementById('revenue').innerText = '₹' + data.total_revenue;
+      document.getElementById('withdrawals').innerText = data.total_withdrawals;
+    }
+
+    async function loadOffers() {
+
+      const res = await fetch(`${API}/offers`);
+      const data = await res.json();
+
+      let html = '';
+
+      data.forEach((offer) => {
+
+        html += `
+          <div class="offer-card">
+            <img src="${offer.image}" alt="offer">
+
+            <h3>${offer.title}</h3>
+
+            <p>Reward: ₹${offer.reward}</p>
+
+            <button class="delete-btn" onclick="deleteOffer(${offer.id})">
+              Delete Offer
+            </button>
+          </div>
+        `;
+      });
+
+      document.getElementById('offers').innerHTML = html;
+    }
+
+    async function addOffer() {
+
+      const title = document.getElementById('title').value;
+      const reward = document.getElementById('reward').value;
+      const image = document.getElementById('image').value;
+      const tracking_link = document.getElementById('tracking_link').value;
+
+      await fetch(`${API}/add-offer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title,
+          reward,
+          image,
+          tracking_link
+        })
+      });
+
+      alert('Offer Added Successfully');
+
+      loadOffers();
+      loadStats();
+    }
+
+    async function deleteOffer(id) {
+
+      await fetch(`${API}/delete-offer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id })
+      });
+
+      alert('Offer Deleted');
+
+      loadOffers();
+      loadStats();
+    }
+
+    loadStats();
+    loadOffers();
+
+  </script>
+
+</body>
+</html>
