@@ -1104,102 +1104,63 @@ async function loadOffers(){
 
       <div class="offer-card">
 
-        <img
-          src="${offer.image}"
-          class="offer-img"
-        >
+        <div class="offer-icon-wrap">
 
-        <div class="offer-content">
-
-          <div class="badge">
-            🔥 Trending Offer
-          </div>
-
-          <div class="offer-title">
-            ${offer.title}
-          </div>
-
-          <div class="offer-reward">
-            Earn ₹${offer.reward}
-          </div>
-
-          <input
-            type="text"
-            id="upi-${offer.id}"
-            class="offer-input"
-            placeholder="Enter UPI ID"
+          <img
+            src="${offer.image}"
+            alt="${offer.title}"
           >
-
-          <button
-            class="offer-btn"
-            onclick="startOffer(
-              ${offer.id},
-              '${offer.tracking_link}'
-            )"
-          >
-            Submit & Start
-          </button>
 
         </div>
+
+        <div class="offer-name">
+          ${offer.title}
+        </div>
+
+        <div class="offer-type">
+          Earn ₹${offer.reward}
+        </div>
+
+        <ul class="offer-features">
+
+          <li>
+            <div class="check-circle">✓</div>
+            Complete simple steps
+          </li>
+
+          <li>
+            <div class="check-circle">✓</div>
+            Trusted partner offer
+          </li>
+
+          <li>
+            <div class="check-circle">✓</div>
+            Instant tracking enabled
+          </li>
+
+        </ul>
+
+        <div class="offer-tag promo">
+          🔥 Trending Offer
+        </div>
+
+        <a href="offer.html?id=${offer.id}">
+
+          <button class="btn-card solid">
+            Start Offer →
+          </button>
+
+        </a>
 
       </div>
 
     `;
+
   });
 
   document.getElementById('offers')
   .innerHTML = html;
-}
 
-async function startOffer(
-  offerId,
-  trackingLink
-){
-
-  const upi =
-  document.getElementById(
-    `upi-${offerId}`
-  ).value;
-
-  if(!upi){
-
-    alert('Enter UPI ID');
-
-    return;
-  }
-
-  const res =
-  await fetch(
-    `${API}/click`,
-    {
-
-      method:'POST',
-
-      headers:{
-        'Content-Type':'application/json'
-      },
-
-      body:JSON.stringify({
-
-        upi_id:upi,
-
-        offer_id:offerId
-
-      })
-    }
-  );
-
-  const data =
-  await res.json();
-
-  const click_id =
-  data.click_id;
-
-  const finalLink =
-  trackingLink + click_id;
-
-  window.location.href =
-  finalLink;
 }
 
 loadOffers();
