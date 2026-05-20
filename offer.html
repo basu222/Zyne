@@ -1,470 +1,416 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Zyne Offer</title>
+<meta charset="UTF-8">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+/>
 
-  <style>
+<title>Zyne Offer</title>
 
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:Arial,sans-serif;
-    }
+<style>
 
-    body{
-      background:#050014;
-      color:white;
-      min-height:100vh;
-      overflow-x:hidden;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
 
-      background-image:
-      radial-gradient(circle at top left,
-      rgba(98,0,255,0.35),
-      transparent 30%),
+body{
 
-      radial-gradient(circle at right,
-      rgba(0,140,255,0.18),
-      transparent 25%);
-    }
+background:#050014;
 
-    .container{
-      max-width:500px;
-      margin:auto;
-      padding:20px;
-    }
+background-image:
+radial-gradient(circle at top left,
+rgba(98,0,255,0.35),
+transparent 30%),
 
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:25px;
-    }
-
-    .logo{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-size:28px;
-      font-weight:bold;
-    }
-
-    .logo-box{
-      width:50px;
-      height:50px;
-      border-radius:16px;
-
-      background:
-      linear-gradient(135deg,#6a00ff,#2f7bff);
-
-      display:flex;
-      align-items:center;
-      justify-content:center;
+radial-gradient(circle at right,
+rgba(0,140,255,0.18),
+transparent 25%);
 
-      font-size:24px;
-      font-weight:bold;
-    }
+color:white;
 
-    .telegram-btn{
-      padding:14px 18px;
-      border-radius:16px;
-      border:none;
-      color:white;
-      font-weight:bold;
-      cursor:pointer;
+padding:20px;
+}
 
-      background:
-      linear-gradient(90deg,#00a2ff,#00c6ff);
+.container{
 
-      box-shadow:
-      0 0 25px rgba(0,174,255,0.35);
-    }
+max-width:520px;
 
-    .card{
-      background:rgba(255,255,255,0.04);
+margin:auto;
+}
 
-      border:1px solid rgba(255,255,255,0.08);
+.card{
 
-      border-radius:28px;
+background:
+rgba(255,255,255,0.04);
 
-      padding:22px;
+border:
+1px solid rgba(255,255,255,0.08);
 
-      backdrop-filter:blur(12px);
+border-radius:30px;
 
-      box-shadow:
-      0 0 30px rgba(98,0,255,0.16);
-    }
+overflow:hidden;
 
-    .badge{
-      display:inline-block;
+backdrop-filter:blur(12px);
 
-      padding:10px 18px;
+box-shadow:
+0 0 30px rgba(98,0,255,0.18);
+}
 
-      border-radius:999px;
+.banner{
 
-      background:rgba(106,0,255,0.15);
+width:100%;
+height:240px;
+object-fit:cover;
+}
 
-      border:1px solid rgba(106,0,255,0.3);
+.content{
 
-      color:#9e8bff;
+padding:24px;
+}
 
-      margin-bottom:18px;
+.badge{
 
-      font-size:14px;
-      font-weight:bold;
-    }
+display:inline-block;
 
-    .offer-img{
-      width:100%;
-      border-radius:22px;
-      margin-bottom:22px;
-    }
+padding:8px 16px;
 
-    h1{
-      font-size:34px;
-      margin-bottom:10px;
-      line-height:1.2;
-    }
+border-radius:999px;
 
-    .reward{
-      font-size:30px;
-      font-weight:bold;
-      color:#8f7cff;
-      margin-bottom:20px;
-    }
+background:
+rgba(106,0,255,0.15);
 
-    .desc{
-      color:#cfcfcf;
-      line-height:1.7;
-      margin-bottom:25px;
-    }
+border:
+1px solid rgba(106,0,255,0.3);
 
-    .input-box{
-      margin-bottom:18px;
-    }
+color:#9e8bff;
 
-    .input-box label{
-      display:block;
-      margin-bottom:10px;
-      color:#d7d7d7;
-      font-size:15px;
-    }
+font-size:13px;
 
-    .input-box input{
-      width:100%;
-      padding:16px;
+font-weight:bold;
 
-      border-radius:16px;
+margin-bottom:18px;
+}
 
-      border:1px solid rgba(255,255,255,0.08);
+.title{
 
-      background:rgba(255,255,255,0.04);
+font-size:34px;
 
-      color:white;
+margin-bottom:12px;
+}
 
-      outline:none;
+.reward{
 
-      font-size:16px;
-    }
+font-size:28px;
 
-    .start-btn{
-      width:100%;
-      padding:18px;
+font-weight:bold;
 
-      border:none;
+color:#8f7cff;
 
-      border-radius:18px;
+margin-bottom:22px;
+}
 
-      font-size:18px;
-      font-weight:bold;
+.desc{
 
-      color:white;
+color:#cfcfcf;
 
-      cursor:pointer;
+line-height:1.7;
 
-      margin-top:10px;
+margin-bottom:28px;
+}
 
-      background:
-      linear-gradient(90deg,#6a00ff,#2f7bff);
+.section{
 
-      box-shadow:
-      0 0 25px rgba(98,0,255,0.4);
-    }
+margin-top:28px;
 
-    .section{
-      margin-top:25px;
+padding:20px;
 
-      background:rgba(255,255,255,0.03);
+border-radius:22px;
 
-      border:1px solid rgba(255,255,255,0.08);
+background:
+rgba(255,255,255,0.03);
 
-      border-radius:22px;
+border:
+1px solid rgba(255,255,255,0.08);
+}
 
-      padding:20px;
-    }
+.section h3{
 
-    .section h2{
-      margin-bottom:16px;
-      color:#9e8bff;
-      font-size:22px;
-    }
+margin-bottom:14px;
 
-    .section p{
-      color:#cccccc;
-      line-height:1.8;
-      white-space:pre-line;
-    }
+color:#a58fff;
+}
 
-    .status-box{
-      margin-top:25px;
+.section p{
 
-      padding:18px;
+line-height:1.8;
 
-      border-radius:20px;
+color:#d5d5d5;
 
-      text-align:center;
+white-space:pre-line;
+}
 
-      background:
-      rgba(0,255,136,0.08);
+.upi{
 
-      border:
-      1px solid rgba(0,255,136,0.2);
-    }
+width:100%;
 
-    .status-box h3{
-      color:#5cffb2;
-      margin-bottom:8px;
-    }
+padding:17px;
 
-    .status-box p{
-      color:#b8ffd8;
-    }
+border:none;
 
-  </style>
+outline:none;
+
+border-radius:18px;
+
+background:
+rgba(255,255,255,0.05);
+
+border:
+1px solid rgba(255,255,255,0.08);
+
+color:white;
+
+font-size:16px;
+
+margin-top:26px;
+
+margin-bottom:18px;
+}
+
+.btn{
+
+width:100%;
+
+padding:18px;
+
+border:none;
+
+border-radius:20px;
+
+font-size:18px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+color:white;
+
+background:
+linear-gradient(
+90deg,
+#6a00ff,
+#2f7bff
+);
+
+box-shadow:
+0 0 25px rgba(98,0,255,0.35);
+}
+
+</style>
 </head>
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <div class="topbar">
+<div class="card">
 
-      <div class="logo">
-        <div class="logo-box">Z</div>
-        Zyne
-      </div>
+<img
+id="image"
+class="banner"
+/>
 
-      <button class="telegram-btn">
-        Join Telegram
-      </button>
+<div class="content">
 
-    </div>
+<div class="badge">
+🔥 Trusted Partner Offer
+</div>
 
-    <div class="card">
+<div
+id="title"
+class="title"
+>
+Loading...
+</div>
 
-      <div class="badge">
-        🔥 Trusted Partner Offer
-      </div>
+<div class="reward">
+Earn ₹<span id="reward">0</span>
+</div>
 
-      <img
-        id="image"
-        class="offer-img"
-      >
+<div
+id="description"
+class="desc"
+></div>
 
-      <h1 id="title">
-        Loading...
-      </h1>
+<input
+type="text"
+id="upi"
+class="upi"
+placeholder="Enter UPI ID"
+/>
 
-      <div class="reward">
-        Earn ₹<span id="reward">0</span>
-      </div>
+<button
+class="btn"
+onclick="startOffer()"
+>
+Submit & Start
+</button>
 
-      <p
-        id="description"
-        class="desc"
-      ></p>
+<div class="section">
 
-      <!-- FORM -->
+<h3>
+📋 How To Complete
+</h3>
 
-      <div class="input-box">
+<p id="steps"></p>
 
-        <label>
-          Full Name
-        </label>
+</div>
 
-        <input
-          type="text"
-          id="name"
-          placeholder="Enter your full name"
-        >
+<div class="section">
 
-      </div>
+<h3>
+⚡ Important Notes
+</h3>
 
-      <div class="input-box">
+<p>
 
-        <label>
-          Mobile Number
-        </label>
+• Complete all steps carefully
 
-        <input
-          type="text"
-          id="mobile"
-          placeholder="Enter mobile number"
-        >
+• Use genuine details only
 
-      </div>
+• Rewards are tracked automatically
 
-      <div class="input-box">
+• Some offers may take time
+to verify
 
-        <label>
-          UPI ID
-        </label>
+</p>
 
-        <input
-          type="text"
-          id="upi"
-          placeholder="Enter your UPI ID"
-        >
+</div>
 
-      </div>
+</div>
 
-      <button
-        class="start-btn"
-        onclick="startOffer()"
-      >
-        Start Task
-      </button>
+</div>
 
-      <!-- STEPS -->
+</div>
 
-      <div class="section">
+<script>
 
-        <h2>
-          📋 How To Complete
-        </h2>
+const API =
+'https://zyne-backend-3rbw.onrender.com';
 
-        <p id="steps"></p>
+let currentOffer = null;
 
-      </div>
+const params =
+new URLSearchParams(
+window.location.search
+);
 
-      <!-- STATUS -->
+const offerId =
+params.get('id');
 
-      <div class="status-box">
+async function loadOffer(){
 
-        <h3>
-          ⚡ Fast Tracking
-        </h3>
+const res =
+await fetch(
+`${API}/offers`
+);
 
-        <p>
-          Your reward will automatically
-          reflect once the task is completed.
-        </p>
+const data =
+await res.json();
 
-      </div>
+const offer =
+data.find(
+o => o.id == offerId
+);
 
-    </div>
+currentOffer = offer;
 
-  </div>
+document
+.getElementById('title')
+.innerText =
+offer.title;
 
-  <script>
+document
+.getElementById('reward')
+.innerText =
+offer.reward;
 
-    const API =
-    'https://zyne-backend-3rbw.onrender.com';
+document
+.getElementById('description')
+.innerText =
+offer.description;
 
-    let currentOffer = null;
+document
+.getElementById('steps')
+.innerText =
+offer.steps;
 
-    const params =
-    new URLSearchParams(window.location.search);
+document
+.getElementById('image')
+.src =
+offer.image;
+}
 
-    const offerId =
-    params.get('id');
+async function startOffer(){
 
-    async function loadOffer(){
+const upi =
+document
+.getElementById('upi')
+.value;
 
-      const res =
-      await fetch(`${API}/offers`);
+if(!upi){
 
-      const data =
-      await res.json();
+alert(
+'Enter UPI ID'
+);
 
-      const offer =
-      data.find(o => o.id == offerId);
+return;
+}
 
-      currentOffer = offer;
+const res =
+await fetch(
+`${API}/click`,
+{
 
-      document.getElementById('title')
-      .innerText = offer.title;
+method:'POST',
 
-      document.getElementById('reward')
-      .innerText = offer.reward;
+headers:{
+'Content-Type':
+'application/json'
+},
 
-      document.getElementById('description')
-      .innerText = offer.description;
+body:JSON.stringify({
 
-      document.getElementById('steps')
-      .innerText = offer.steps;
+upi_id:upi,
 
-      document.getElementById('image')
-      .src = offer.image;
-    }
+offer_id:
+currentOffer.id
 
-    async function startOffer(){
+})
+}
+);
 
-      const name =
-      document.getElementById('name').value;
+const data =
+await res.json();
 
-      const mobile =
-      document.getElementById('mobile').value;
+const click_id =
+data.click_id;
 
-      const upi =
-      document.getElementById('upi').value;
+const finalLink =
+currentOffer
+.tracking_link
++ click_id;
 
-      if(!name || !mobile || !upi){
+window.location.href =
+finalLink;
+}
 
-        alert('Please fill all details');
+loadOffer();
 
-        return;
-      }
-
-      const res =
-      await fetch(
-        `${API}/click`,
-        {
-          method:'POST',
-
-          headers:{
-            'Content-Type':'application/json'
-          },
-
-          body:JSON.stringify({
-
-            upi_id:upi,
-
-            offer_id:currentOffer.id
-          })
-        }
-      );
-
-      const data =
-      await res.json();
-
-      const click_id =
-      data.click_id;
-
-      let finalLink =
-      currentOffer.tracking_link;
-
-      finalLink += click_id;
-
-      window.location.href =
-      finalLink;
-    }
-
-    loadOffer();
-
-  </script>
+</script>
 
 </body>
 </html>
