@@ -269,28 +269,52 @@
 
     async function addOffer() {
 
-      const title = document.getElementById('title').value;
-      const reward = document.getElementById('reward').value;
-      const image = document.getElementById('image').value;
-      const tracking_link = document.getElementById('tracking_link').value;
+  const title =
+  document.getElementById('title').value;
 
-      await fetch(`${API}/add-offer`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          title,
-          reward,
-          image,
-          tracking_link
-        })
-      });
+  const reward =
+  document.getElementById('reward').value;
 
-      alert('Offer Added Successfully');
+  const image =
+  document.getElementById('image').value;
 
-      loadOffers();
-      loadStats();
+  const tracking_link =
+  document.getElementById('tracking_link').value;
+
+  const res = await fetch(
+    `${API}/add-offer`,
+    {
+
+      method:'POST',
+
+      headers:{
+        'Content-Type':'application/json'
+      },
+
+      body: JSON.stringify({
+
+        title,
+        reward,
+        image,
+        tracking_link
+
+      })
+
+    }
+  );
+
+  const data =
+  await res.json();
+
+  alert(
+    data.message ||
+    'Offer Added'
+  );
+
+  loadOffers();
+
+  loadStats();
+
     }
 
     async function deleteOffer(id) {
