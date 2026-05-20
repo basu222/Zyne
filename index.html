@@ -891,108 +891,310 @@ Engage with top-rated apps, share your feedback, and earn rewards for every succ
   </section>
 
   <!-- OFFERS SECTION -->
-  <section id="offers-section">
-    <div class="sec-label">🔥 Partner Offers</div>
-    <div class="section-head">
-      <h2 class="sec-title">Explore <span class="grad">Popular</span> Offers</h2>
-      <a href="#" class="view-all-link" onclick="openAllOffers(); return false;">View All Offers →</a>
-    </div>
+<!-- =========================
+     PREMIUM OFFER CARDS
+========================= -->
 
-    <!-- Hidden by default. Revealed when "Explore Offers" is clicked -->
-    <div id="offers-content">
-      <div class="offers-grid">
+<div class="offers-grid" id="offers"></div>
 
-        <!-- OFFER 1: UPSTOX -->
-        <div class="offer-card reveal">
-          <div class="offer-icon-wrap">
-            <!-- REPLACE src with your Upstox logo image path -->
-            <div class="icon-placeholder"></div>
-            <!-- <img src="upstox.png" alt="Upstox"> -->
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
+
+  background:#050014;
+
+  background-image:
+  radial-gradient(circle at top left,
+  rgba(98,0,255,0.35),
+  transparent 30%),
+
+  radial-gradient(circle at right,
+  rgba(0,140,255,0.18),
+  transparent 25%);
+
+  color:white;
+}
+
+.offers-grid{
+
+  display:grid;
+
+  grid-template-columns:
+  repeat(auto-fit,minmax(320px,1fr));
+
+  gap:22px;
+
+  padding:20px;
+}
+
+.offer-card{
+
+  background:
+  rgba(255,255,255,0.04);
+
+  border:
+  1px solid rgba(255,255,255,0.08);
+
+  border-radius:28px;
+
+  overflow:hidden;
+
+  backdrop-filter:blur(12px);
+
+  box-shadow:
+  0 0 30px rgba(98,0,255,0.15);
+
+  transition:0.3s;
+}
+
+.offer-card:hover{
+
+  transform:
+  translateY(-4px);
+
+  box-shadow:
+  0 0 35px rgba(98,0,255,0.35);
+}
+
+.offer-img{
+
+  width:100%;
+  height:190px;
+  object-fit:cover;
+}
+
+.offer-content{
+
+  padding:20px;
+}
+
+.badge{
+
+  display:inline-block;
+
+  padding:8px 14px;
+
+  border-radius:999px;
+
+  background:
+  rgba(106,0,255,0.15);
+
+  border:
+  1px solid rgba(106,0,255,0.3);
+
+  color:#9e8bff;
+
+  font-size:13px;
+
+  font-weight:bold;
+
+  margin-bottom:14px;
+}
+
+.offer-title{
+
+  font-size:28px;
+
+  margin-bottom:12px;
+}
+
+.offer-reward{
+
+  font-size:24px;
+
+  font-weight:bold;
+
+  color:#8f7cff;
+
+  margin-bottom:18px;
+}
+
+.offer-input{
+
+  width:100%;
+
+  padding:16px;
+
+  border:none;
+
+  outline:none;
+
+  border-radius:16px;
+
+  background:
+  rgba(255,255,255,0.05);
+
+  border:
+  1px solid rgba(255,255,255,0.08);
+
+  color:white;
+
+  margin-bottom:18px;
+
+  font-size:15px;
+}
+
+.offer-btn{
+
+  width:100%;
+
+  padding:16px;
+
+  border:none;
+
+  border-radius:18px;
+
+  font-size:17px;
+
+  font-weight:bold;
+
+  cursor:pointer;
+
+  color:white;
+
+  background:
+  linear-gradient(
+    90deg,
+    #6a00ff,
+    #2f7bff
+  );
+
+  box-shadow:
+  0 0 25px rgba(98,0,255,0.35);
+}
+
+</style>
+
+<script>
+
+const API =
+'https://zyne-backend-3rbw.onrender.com';
+
+async function loadOffers(){
+
+  const res =
+  await fetch(`${API}/offers`);
+
+  const data =
+  await res.json();
+
+  let html = '';
+
+  data.forEach((offer) => {
+
+    html += `
+
+      <div class="offer-card">
+
+        <img
+          src="${offer.image}"
+          class="offer-img"
+        >
+
+        <div class="offer-content">
+
+          <div class="badge">
+            🔥 Trending Offer
           </div>
-          <div class="offer-name">Upstox</div>
-          <div class="offer-type">Account Opening</div>
-          <ul class="offer-features">
-            <li><div class="check-circle">✓</div> Open Demat Account</li>
-            <li><div class="check-circle">✓</div> Explore Investment Platform</li>
-            <li><div class="check-circle">✓</div> Zero Brokerage on Delivery</li>
-          </ul>
-          <div class="offer-tag">Benefits as per partner terms</div>
-          <!-- REPLACE href with your Upstox referral link -->
-          <a href="https://cgrj.in/c/0kjrbu0p" target="_blank" class="btn-card solid">Get Started →</a>
+
+          <div class="offer-title">
+            ${offer.title}
+          </div>
+
+          <div class="offer-reward">
+            Earn ₹${offer.reward}
+          </div>
+
+          <input
+            type="text"
+            id="upi-${offer.id}"
+            class="offer-input"
+            placeholder="Enter UPI ID"
+          >
+
+          <button
+            class="offer-btn"
+            onclick="startOffer(
+              ${offer.id},
+              '${offer.tracking_link}'
+            )"
+          >
+            Submit & Start
+          </button>
+
         </div>
 
-        <!-- OFFER 2: ANGEL ONE -->
-        <div class="offer-card reveal">
-          <div class="offer-icon-wrap">
-            <!-- REPLACE src with your Angel One logo -->
-            <div class="icon-placeholder"></div>
-            <!-- <img src="angelone.png" alt="Angel One"> -->
-          </div>
-          <div class="offer-name">Angel One</div>
-          <div class="offer-type">Account Opening</div>
-          <ul class="offer-features">
-            <li><div class="check-circle">✓</div> Open Demat Account</li>
-            <li><div class="check-circle">✓</div> Explore Trading Platform</li>
-            <li><div class="check-circle">✓</div> Free Research Reports</li>
-          </ul>
-          <div class="offer-tag">Benefits as per partner terms</div>
-          <!-- REPLACE href with your Angel One referral link -->
-          <a href="https://cgrj.in/c/l5gghvol" target="_blank" class="btn-card solid">Get Started →</a>
-        </div>
+      </div>
 
-        <!-- OFFER 3: STORY TV — PAUSED -->
-        <div class="offer-card paused reveal">
-          <div class="paused-badge">⏸ Paused</div>
-          <div class="offer-icon-wrap">
-            <!-- REPLACE src with your Story TV logo -->
-            <div class="icon-placeholder"></div>
-            <!-- <img src="storytv.png" alt="Story TV"> -->
-          </div>
-          <div class="offer-name">Story TV</div>
-          <div class="offer-type">App Offer</div>
-          <ul class="offer-features">
-            <li><div class="check-circle">✓</div> Install the App</li>
-            <li><div class="check-circle">✓</div> Explore Premium Content</li>
-          </ul>
-          <div class="offer-tag paused-tag">Offer Currently Paused</div>
-          <button class="btn-card disabled" disabled>Currently Unavailable</button>
-        </div>
+    `;
+  });
 
-        <!-- OFFER 4: ABCD GOLD — PAUSED -->
-        <div class="offer-card paused reveal">
-          <div class="paused-badge">⏸ Paused</div>
-          <div class="offer-icon-wrap">
-            <!-- REPLACE src with your ABCD Gold logo -->
-            <div class="icon-placeholder"></div>
-            <!-- <img src="abcdgold.png" alt="ABCD Gold"> -->
-          </div>
-          <div class="offer-name">ABCD Gold</div>
-          <div class="offer-type">App Offer</div>
-          <ul class="offer-features">
-            <li><div class="check-circle">✓</div> Install the App</li>
-            <li><div class="check-circle">✓</div> Complete Required Steps</li>
-          </ul>
-          <div class="offer-tag paused-tag">Offer Currently Paused</div>
-          <button class="btn-card disabled" disabled>Currently Unavailable</button>
-        </div>
+  document.getElementById('offers')
+  .innerHTML = html;
+}
 
-      </div><!-- /offers-grid -->
+async function startOffer(
+  offerId,
+  trackingLink
+){
 
-      <!-- Disclaimer -->
-      <p style="margin-top:22px; font-size:0.77rem; color:var(--muted); text-align:center;">
-        ⚠️ Zyne is an affiliate platform. We may earn a commission when you use our links. Benefits depend on partner terms.
-      </p>
-    </div><!-- /offers-content -->
+  const upi =
+  document.getElementById(
+    `upi-${offerId}`
+  ).value;
 
-    <!-- Show Prompt (when offers are hidden) -->
-    <div id="offers-prompt" style="text-align:center; padding: 40px 0;">
-      <p style="color:var(--muted); font-size:0.92rem; margin-bottom:20px;">Click "Explore Offers" to browse all available partner deals.</p>
-      <button class="btn-primary" onclick="scrollToOffers()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-        Explore Offers
-      </button>
-    </div>
-  </section>
+  if(!upi){
+
+    alert('Enter UPI ID');
+
+    return;
+  }
+
+  const res =
+  await fetch(
+    `${API}/click`,
+    {
+
+      method:'POST',
+
+      headers:{
+        'Content-Type':'application/json'
+      },
+
+      body:JSON.stringify({
+
+        upi_id:upi,
+
+        offer_id:offerId
+
+      })
+    }
+  );
+
+  const data =
+  await res.json();
+
+  const click_id =
+  data.click_id;
+
+  const finalLink =
+  trackingLink + click_id;
+
+  window.location.href =
+  finalLink;
+}
+
+loadOffers();
+
+</script>
+</section>
 
   <!-- HOW IT WORKS -->
   <section id="how-section">
