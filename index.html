@@ -880,7 +880,18 @@ Engage with top-rated apps, share your feedback, and earn rewards for every succ
           </div>
           <div class="phone-title">Explore<br>Partner Offers</div>
           <div class="phone-sub">Find apps &amp; services with exclusive benefits.</div>
-          <button class="phone-cta" onclick="scrollToOffers()">Browse Offers</button>
+          <button
+class="phone-cta"
+
+onclick="
+document
+.getElementById('offers')
+.scrollIntoView({
+behavior:'smooth'
+})
+"
+>
+Browse Offers</button>
           <div class="phone-stats">
             <div class="phone-stat"><strong>50+</strong><span>Offers</span></div>
             <div class="phone-stat"><strong>20K+</strong><span>Users</span></div>
